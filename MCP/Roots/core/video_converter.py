@@ -64,4 +64,34 @@ class VideoConverter:
             
         return cmd
     
-    
+    @classmethod
+    async def convert(cls, input_path: str, format: str) -> str:
+        """
+        Convert video file to specified format.
+        Returns success message or raises an error.
+        """
+        # Validate input
+        cls.validate_input(input_path)
+        
+        # Generate output path
+        output_path = cls.generate_output_path(input_path, format)
+        
+        # Build ffmpeg command
+        cmd = cls.build_ffmpeg_command(input_path, output_path, format)
+        
+        try:
+            # Run ffmpeg asynchronously
+            process = await asyncio.create_subprocess_exec(
+                *cmd,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE
+            )
+            _, stderr = await process.communicate()
+            
+            if process.returncode != 0:
+                raise RuntimeError(f"FFmpeg conversion failed: {stderr.decode()}")
+                
+            return f"Successfully converted {input_path} to {output_path}"
+            
+        except FileNotFoundError:
+            raise RuntimeError("FFmpeg not found. Please ensure ffmpeg is installed and in PATH")
