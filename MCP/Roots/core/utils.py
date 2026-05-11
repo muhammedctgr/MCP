@@ -11,3 +11,10 @@ def file_url_to_path(file_url) -> Path:
         path = path[1:]
 
     return Path(path)
+
+
+    def ensure_directory_exists(path: Path):
+        """Ensure the directory for the given path exists."""
+        directory = path.parent
+        if not directory.exists():
+            directory.mkdir(parents=True, exist_ok=True)
