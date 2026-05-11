@@ -28,4 +28,10 @@ class VideoConverter:
             
         return input_file
     
+    @classmethod
+    def generate_output_path(cls, input_path: str, format: str) -> str:
+        """Generate output path by replacing the file extension."""
+        base_path = os.path.splitext(input_path)[0]
+        return f"{base_path}.{format.lower()}"
+    
     
