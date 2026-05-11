@@ -34,4 +34,34 @@ class VideoConverter:
         base_path = os.path.splitext(input_path)[0]
         return f"{base_path}.{format.lower()}"
     
+    @classmethod
+    def build_ffmpeg_command(cls, input_path: str, output_path: str, format: str) -> list:
+        """Build the ffmpeg command based on format settings."""
+        preset = cls.QUALITY_PRESETS["medium"]
+        
+        # Base command
+        cmd = ["ffmpeg", "-i", input_path, "-y"]
+        
+        if format.lower() == "gif":
+            # Special handling for GIF conversion
+            cmd.extend([
+                "-vf", "fps=15,scale=480:-1:flags=lanczos",
+                "-c:v", "gif",
+                output_path
+            ])
+        elif format.lower() in cls.SUPPORTED_FORMATS:
+            # Standard video conversion
+            cmd.extend([
+                "-c:v", "libx264",
+                "-preset", preset["preset"],
+                "-crf", preset["crf"],
+                "-c:a", "aac",
+                "-b:a", "128k",
+                output_path
+            ])
+        else:
+            raise ValueError(f"Unsupported output format: {format}")
+            
+        return cmd
+    
     
