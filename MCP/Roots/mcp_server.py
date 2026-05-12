@@ -75,3 +75,5 @@ async def read_dir(
 
 if __name__ == "__main__":
     mcp.run(transport="stdio")
+
+// again lets ee what works and what doesn't. I want to make sure the video converter tool works, and that the list roots and read dir tools work as well.
